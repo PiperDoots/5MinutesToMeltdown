@@ -12,6 +12,9 @@ public class Movement : MonoBehaviour
 	[SerializeField] private float jumpForce;
 	[SerializeField] private float jumpCooldown;
 	[SerializeField] private float airMultiplier;
+	[SerializeField] private float jumpTime;
+	private float jumpTimeC;
+	private bool jumping;
 	bool readyToJump;
 
 	[Header("Crouching")]
@@ -141,12 +144,36 @@ public class Movement : MonoBehaviour
 		if(Input.GetKey(jumpKey) && readyToJump && grounded)
 		{
 			readyToJump = false;
-			Jump();
+			rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+			jumping = true;
+			jumpTimeC = jumpTime;
+			rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
+		}
+
+		// keep jumping when holding space for x time
+		if (Input.GetKey(jumpKey) && jumping)
+		{
+			if (jumpTimeC > 0)
+			{
+				rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
+				jumpTimeC -= Time.deltaTime;
+			}
+			else
+			{
+				jumping = false;
+				Invoke("ResetJump", jumpCooldown);
+			}
+		};
+		// Reset jump so you can't jump twice
+		if (Input.GetKeyUp(jumpKey))
+		{
+			jumping = false;
 			Invoke("ResetJump", jumpCooldown);
 		}
 
 		// Check if the crouch key is down or up, crouch if it's down
-		if(Input.GetKeyDown(crouchKey))
+		if (Input.GetKeyDown(crouchKey))
 		{
 			transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
 			rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
@@ -176,17 +203,6 @@ public class Movement : MonoBehaviour
 			}
 		}	
 	}
-	private void Jump()
-	{
-		// Zero out the vertical component of the player's velocity to prevent them from jumping too high.
-		rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
-		rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-	}
-	private void ResetJump()
-	{
-		readyToJump = true;
-	}
 	private bool OnSlope()
 	{
 		if(Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
@@ -199,5 +215,10 @@ public class Movement : MonoBehaviour
 	private Vector3 GetSlopeMoveDirection()
 	{
 		return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
+	}
+
+	private void ResetJump()
+	{
+		readyToJump = true;
 	}
 }

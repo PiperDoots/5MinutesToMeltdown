@@ -1380,7 +1380,7 @@ GameObject:
   - component: {fileID: 1397023176}
   - component: {fileID: 1397023175}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Screen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2270,6 +2270,14 @@ PrefabInstance:
     - target: {fileID: 853774857071261738, guid: 49adfb546c65ef1438542996a74a1839, type: 3}
       propertyPath: m_Name
       value: Player + Cam
+      objectReference: {fileID: 0}
+    - target: {fileID: 2913463430257721955, guid: 49adfb546c65ef1438542996a74a1839, type: 3}
+      propertyPath: jumpTime
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 2913463430257721955, guid: 49adfb546c65ef1438542996a74a1839, type: 3}
+      propertyPath: jumpForce
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3615567745220119525, guid: 49adfb546c65ef1438542996a74a1839, type: 3}
       propertyPath: m_RootOrder
